@@ -1,6 +1,7 @@
 ﻿using GraduateWork.Data;
 using GraduateWork.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace GraduateWork.Controllers
@@ -13,9 +14,9 @@ namespace GraduateWork.Controllers
         {
             _dbContext = dbContext;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            return View( await _dbContext.Projects.ToListAsync());
         }
 
         public IActionResult Privacy()
