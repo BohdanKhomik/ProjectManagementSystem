@@ -20,8 +20,8 @@
 
         public DateTime CreatedDate { get; set; }
 
-        public string AssigneeUserId { get; set; }
-        public string ReporterUserId { get; set; }
+        public string? AssigneeUserId { get; set; }
+        public string? ReporterUserId { get; set; }
         public ApplicationUser Assignee { get; set; }
         public ApplicationUser Reporter { get; set; }
     }

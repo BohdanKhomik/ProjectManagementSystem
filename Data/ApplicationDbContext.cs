@@ -5,7 +5,7 @@ using System.Reflection.Emit;
 
 namespace GraduateWork.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Issue> Issues { get; set; }
         public DbSet<Project> Projects { get; set; }

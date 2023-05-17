@@ -8,6 +8,6 @@
         public Project? Project { get; set; }
         public int ProjectId { get; set; }
 
-        public List<Issue> Issues { get; set; }
+        public List<Issue>? Issues { get; set; }
     }
 }
