@@ -1,4 +1,5 @@
 ﻿using GraduateWork.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Emit;
@@ -23,6 +24,8 @@ namespace GraduateWork.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            //builder.Entity<ApplicationUser>().ToTable("AspNetUsers");
 
             builder.Entity<ProjectUser>()
                 .HasOne(pu => pu.Project)

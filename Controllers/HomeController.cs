@@ -18,7 +18,13 @@ namespace GraduateWork.Controllers
         {
             return View( await _dbContext.Projects.ToListAsync());
         }
-
+        
+        [HttpGet]
+        public async Task<IActionResult> Board(int? Id)//Movie id
+        {
+            var columns_dbContext = _dbContext.ProjectColumns.Where(c => c.ProjectId == Id).Include(c => c.Issues);
+            return View(await columns_dbContext.ToListAsync());
+        }
         public IActionResult Privacy()
         {
             return View();

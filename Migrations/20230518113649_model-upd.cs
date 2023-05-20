@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GraduateWork.Migrations
 {
-    public partial class confige_relationships : Migration
+    public partial class modelupd : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -28,7 +28,6 @@ namespace GraduateWork.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -225,6 +224,8 @@ namespace GraduateWork.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ProjectId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -251,8 +252,8 @@ namespace GraduateWork.Migrations
                     EstimatedTime = table.Column<TimeSpan>(type: "time", nullable: false),
                     EllapsedTime = table.Column<TimeSpan>(type: "time", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AssigneeUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ReporterUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    AssigneeUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ReporterUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {

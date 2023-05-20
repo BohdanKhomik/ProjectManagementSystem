@@ -5,26 +5,35 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-@*    <p>
-        <a asp-action="CreateProject">Create New</a>
-    </p>*@
-    <main>
-    @foreach (var item in Model)
-    {
+    <div class="cont">
+        @foreach (var item in Model)
+        {
+            <div class="wrapper">
+                <a class="proj-link" asp-action="Board" asp-route-id="@item.Id">
+                    <span class="projFill"></span>
+                    <p class="innerText">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </p>
+                </a>
+            </div>
+        }
         <div class="wrapper">
-            <div class="projFill"></div>
-            <p class="innerText">
-                    <a class="proj-link" asp-action="ViewProject">@Html.DisplayFor(modelItem => item.Name)</a>
-            </p>
+            <a class="proj-link" asp-action="CreateProject">
+                <span class="projFill">
+                    <svg width="115" height="115" viewBox="0 0 115 115" fill="none"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path d="M49.5 0H64.8827V49.9906H114.5V64.9906H64.8827V114.991H49.7942V64.9906H0V49.9906H49.5V0Z"
+                              fill="gray" />
+                    </svg>
+                </span>
+
+                <p class="innerText">
+                    Create new Project
+                </p>
+            </a>
         </div>
-    }
-    <div class="wrapper">
-        <div class="projFill"></div>
-        <p class="innerText">
-                <a class="proj-link" asp-action="CreateProject">Create new Project</a>
-        </p>
+
     </div>
-    </main>
     @*<table class="table">
         <thead>
             <tr>

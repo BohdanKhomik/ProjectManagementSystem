@@ -48,7 +48,9 @@ namespace GraduateWork.Controllers
         // GET: Projects/Create
         public IActionResult Create()
         {
-            return View();
+            Project project = new Project();
+            project.ProjectColumns.Add(new ProjectColumn() { Id = 1});
+            return PartialView("_CreateProject", project);
         }
 
         // POST: Projects/Create

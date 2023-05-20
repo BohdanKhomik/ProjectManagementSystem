@@ -1,0 +1,60 @@
+﻿@model IEnumerable<GraduateWork.Models.ProjectColumn>
+@{
+    ViewData["Title"] = "Board Page";
+}
+
+<div class="container">
+    <header class="header">
+        <nav class="nav-menu">
+            <ul class="menu">
+                <li class="menu-li">
+                    <a class="proj-link innerText" href="StartSprint">Start Sprint</a>
+                </li>
+                <li class="menu-li">
+                    <a class="proj-link innerText" href="CreateIssue">CreateIssue</a>
+                </li>
+                <li class="menu-li">
+                    <a class="proj-link innerText" href="ManageUsers">Manage Users</a>
+                </li>
+            </ul>
+            <ul class="menu">
+                <li class="menu-li">
+                    <a class="proj-link innerText" href="EndSprint">End Sprint</a>
+                </li>
+                <li class="menu-li">
+                    <a class="proj-link innerText" href="Sprint Statistic">Sprint Statistic</a>
+                </li>
+            </ul>
+            <ul class="menu">
+                <li class="menu-li">
+                    <a class="proj-link innerText" href="ShowIssues">Show Issues Without Sprints</a>
+                </li>
+                <li class="menu-li">
+                    <a class="proj-link innerText" href="SelectSprint">SelectSprint</a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="main-container">
+            @foreach (var column in Model)
+            {
+                <div class="container-item">
+                    <span class="column-title">@Html.DisplayFor(col => column.Name)</span>
+                    <div class="column-tasks">
+                        @foreach (var issue in column.Issues)
+                        {
+                            <div class="task">
+                                <a class="proj-link" asp-action="ViewTask" asp-route-id="@issue.Id">
+                                    <span class="projFill"></span>
+                                    <p class="innerText">
+                                        @Html.DisplayFor(modelItem => issue.Title)
+                                    </p>
+                                </a>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            }
+        </div>
+</div>
