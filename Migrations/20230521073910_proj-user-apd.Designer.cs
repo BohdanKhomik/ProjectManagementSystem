@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GraduateWork.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230518113649_model-upd")]
-    partial class modelupd
+    [Migration("20230521073910_proj-user-apd")]
+    partial class projuserapd
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -199,6 +199,9 @@ namespace GraduateWork.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Role")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")

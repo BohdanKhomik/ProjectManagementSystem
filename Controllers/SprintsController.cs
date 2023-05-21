@@ -63,7 +63,7 @@ namespace GraduateWork.Controllers
             {
                 _context.Add(sprint);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Board", "Home");
             }
             ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Id", sprint.ProjectId);
             return View(sprint);

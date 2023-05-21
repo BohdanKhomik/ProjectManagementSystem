@@ -25,6 +25,25 @@ namespace GraduateWork.Controllers
             var columns_dbContext = _dbContext.ProjectColumns.Where(c => c.ProjectId == Id).Include(c => c.Issues);
             return View(await columns_dbContext.ToListAsync());
         }
+        [HttpGet]
+        public IActionResult StartSprint()
+        {
+            return RedirectToAction("Create", "Sprints");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ManageUsers()//Movie id
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ManageUsers(int? Id)//Movie id
+        {
+            var columns_dbContext = _dbContext.ProjectColumns.Where(c => c.ProjectId == Id).Include(c => c.Issues);
+            return View(await columns_dbContext.ToListAsync());
+        }
+
         public IActionResult Privacy()
         {
             return View();
