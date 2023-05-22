@@ -16,7 +16,7 @@
         public int SprintId { get; set; }
 
         public TimeSpan EstimatedTime { get; set; }
-        public TimeSpan EllapsedTime { get; set; }
+        public TimeSpan? EllapsedTime { get; set; }
 
         public DateTime CreatedDate { get; set; }
 

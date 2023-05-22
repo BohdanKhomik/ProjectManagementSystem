@@ -31,6 +31,11 @@ namespace GraduateWork.Controllers
             return RedirectToAction("Create", "Sprints");
         }
 
+        public IActionResult Create()
+        {
+            return RedirectToAction("Create", "Projects");
+        }
+
         [HttpGet]
         public async Task<IActionResult> ManageUsers()//Movie id
         {

@@ -64,7 +64,7 @@ namespace GraduateWork.Controllers
             {
                 _context.Add(project);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Board", "Home");
             }
             return View(project);
         }

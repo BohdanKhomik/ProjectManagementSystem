@@ -18,7 +18,7 @@
             </div>
         }
         <div class="wrapper">
-            <a class="proj-link" asp-action="CreateProject">
+            <a class="proj-link" data-toggle="modal" data-target="#addProject" onclick="addProject()" style="cursor:pointer">
                 <span class="projFill">
                     <svg width="115" height="115" viewBox="0 0 115 115" fill="none"
                          xmlns="http://www.w3.org/2000/svg">
@@ -34,6 +34,7 @@
         </div>
 
     </div>
+    <div id="projectTable"></div>
     @*<table class="table">
         <thead>
             <tr>
@@ -72,3 +73,15 @@
         </tbody>
     </table>*@
 </div>
+<script>
+    function addProject(id) {
+        $.ajax({
+            type: "Get",
+            url: "/Projects/Create",
+            success: function (result) {
+                $("#projectTable").html(result);
+                $("#addProject").modal('show');
+            }
+        });
+    }
+</script>

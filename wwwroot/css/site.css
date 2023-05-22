@@ -120,8 +120,9 @@ header {
 
 .container-item {
     background-color: #79ffe2;
-    gap: 15px;
-    min-width: 20%;
+    gap: 10px;
+    min-width: 15%;
+    max-width:20%;
     display: flex;
     flex-direction: column;
 }

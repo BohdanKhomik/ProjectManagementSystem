@@ -1,0 +1,103 @@
+﻿@model GraduateWork.Models.Project
+
+@{
+    ViewData["Title"] = "Create";
+}
+<div class="modal fade" role="dialog" tabindex="-1" id="addProject" aria-labelledby="addProjectLable" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+        <div class="modal-content" style="background-color:lightblue !important;">
+            <div class="modal-header"><h3>Project</h3></div>
+            <div class="modal-body">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label"></label>
+                        <input asp-for="Description" class="form-control" />
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Key" class="control-label"></label>
+                        <input asp-for="Key" class="form-control" />
+                        <span asp-validation-for="Key" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Number of colums you wish</label>
+                        <input id="numOfColumns" class="form-control" />
+                    </div>
+                    <h3>Columns</h3>
+                    <table class="table table-bordered" id="columnsTable">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    Project
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @for (int i = 0; i < Model.ProjectColumns.Count; i++)
+                            {
+                                <tr class="form-item">
+                                    <td>
+                                        @Html.EditorFor(p => p.ProjectColumns[i].Name, new { htmlAttributes = new {@class = "form-control"} })
+                                    </td>
+                                    <td>
+                                        @*<input value="@Model.Name" class="form-control" readonly></>*@
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <input type="hidden" id="LastIndex" value="0" />
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-secondary" value="Cancel" data-dismiss="modal" />
+                        <input id="submit-btn" type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </form>
+                <div>
+                    @*<a asp-action="Index">Back to List</a>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $("#numOfColumns").on('change', function(){
+        var RowNumber = document.getElementById("numOfColumns").value;
+        $("#columnsTable tbody").find("tr:not(:first)").remove();
+
+        for(var i = 0; i < RowNumber - 1; i++) {
+            var table = document.getElementById('columnsTable');
+            var rows = table.getElementsByTagName('tr');
+            var rowOuterHtml = rows[rows.length - 1].outerHTML;
+            var lastrowIdx = document.getElementById('LastIndex').value;
+
+            var nextrowIdx = eval(lastrowIdx) + 1;
+
+            document.getElementById('LastIndex').value = nextrowIdx;
+            rowOuterHtml = rowOuterHtml.replaceAll('_' + lastrowIdx + '_', '_' + nextrowIdx + '_');
+            rowOuterHtml = rowOuterHtml.replaceAll('[' + lastrowIdx + ']', '[' + nextrowIdx + ']');
+            rowOuterHtml = rowOuterHtml.replaceAll('-' + lastrowIdx, '-' + nextrowIdx);
+
+            var newRow = table.insertRow();
+            newRow.innerHTML = rowOuterHtml;
+        }
+    })
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
