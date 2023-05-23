@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GraduateWork.Migrations
 {
-    public partial class projuserapd : Migration
+    public partial class issuemodelupdate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -251,7 +251,7 @@ namespace GraduateWork.Migrations
                     ColumnId = table.Column<int>(type: "int", nullable: false),
                     SprintId = table.Column<int>(type: "int", nullable: false),
                     EstimatedTime = table.Column<TimeSpan>(type: "time", nullable: false),
-                    EllapsedTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    EllapsedTime = table.Column<TimeSpan>(type: "time", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AssigneeUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ReporterUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)

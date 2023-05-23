@@ -6,13 +6,13 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <div class="cont">
-        @foreach (var item in Model)
+        @foreach (var project in Model)
         {
             <div class="wrapper">
-                <a class="proj-link" asp-action="Board" asp-route-id="@item.Id">
+                <a class="proj-link" asp-action="Board" asp-route-id="@project.Id">
                     <span class="projFill"></span>
                     <p class="innerText">
-                        @Html.DisplayFor(modelItem => item.Name)
+                        @Html.DisplayFor(modelItem => project.Name)
                     </p>
                 </a>
             </div>

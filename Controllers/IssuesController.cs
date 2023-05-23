@@ -49,93 +49,153 @@ namespace GraduateWork.Controllers
         }
 
         // GET: Issues/Create
-        public IActionResult Create()
+        public async Task<IActionResult> CreateOrEdit(int? id = null)
         {
             ViewData["AssigneeUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
             ViewData["ColumnId"] = new SelectList(_context.ProjectColumns, "Id", "Id");
             ViewData["ReporterUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
             ViewData["SprintId"] = new SelectList(_context.Sprints, "Id", "Id");
-            return View();
+            Issue? issue = null;
+            if (id == null)
+            {
+                issue = new Issue();
+            }
+            else
+            {
+                issue = await _context.Issues.FindAsync(id);
+                if (issue == null)
+                {
+                    return NotFound();
+                }
+            }
+            return PartialView("CreateOrEditIssue", issue);
         }
 
-        // POST: Issues/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,ColumnId,SprintId,EstimatedTime,EllapsedTime,CreatedDate,AssigneeUserId,ReporterUserId")] Issue issue)
+        public async Task<IActionResult> CreateOrEdit(Issue issue)
         {
-            if (ModelState.IsValid)
+            ViewData["AssigneeUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
+            ViewData["ColumnId"] = new SelectList(_context.ProjectColumns, "Id", "Id");
+            ViewData["ReporterUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
+            ViewData["SprintId"] = new SelectList(_context.Sprints, "Id", "Id");
+            if (issue.Id == 0)
             {
-                _context.Add(issue);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["AssigneeUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", issue.AssigneeUserId);
-            ViewData["ColumnId"] = new SelectList(_context.ProjectColumns, "Id", "Id", issue.ColumnId);
-            ViewData["ReporterUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", issue.ReporterUserId);
-            ViewData["SprintId"] = new SelectList(_context.Sprints, "Id", "Id", issue.SprintId);
-            return View(issue);
-        }
+                if (ModelState.IsValid)
+                {
+                    _context.Add(issue);
 
-        // GET: Issues/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Issues == null)
-            {
-                return NotFound();
+                }
+                else
+                {
+                    return BadRequest("Not valid");
+                }
             }
-
-            var issue = await _context.Issues.FindAsync(id);
-            if (issue == null)
+            else
             {
-                return NotFound();
-            }
-            ViewData["AssigneeUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", issue.AssigneeUserId);
-            ViewData["ColumnId"] = new SelectList(_context.ProjectColumns, "Id", "Id", issue.ColumnId);
-            ViewData["ReporterUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", issue.ReporterUserId);
-            ViewData["SprintId"] = new SelectList(_context.Sprints, "Id", "Id", issue.SprintId);
-            return View(issue);
-        }
-
-        // POST: Issues/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,ColumnId,SprintId,EstimatedTime,EllapsedTime,CreatedDate,AssigneeUserId,ReporterUserId")] Issue issue)
-        {
-            if (id != issue.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                if (ModelState.IsValid)
                 {
                     _context.Update(issue);
-                    await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!IssueExists(issue.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return BadRequest("Not valid");
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["AssigneeUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", issue.AssigneeUserId);
-            ViewData["ColumnId"] = new SelectList(_context.ProjectColumns, "Id", "Id", issue.ColumnId);
-            ViewData["ReporterUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", issue.ReporterUserId);
-            ViewData["SprintId"] = new SelectList(_context.Sprints, "Id", "Id", issue.SprintId);
-            return View(issue);
+            await _context.SaveChangesAsync();
+            var issue_column = await _context.ProjectColumns.Where(item => item.Id == issue.ColumnId).FirstOrDefaultAsync();
+            var project_id = await _context.Projects.Where(item => item.Id == issue_column.ProjectId).FirstOrDefaultAsync();
+            //var projectId = await _context.Projects.Where(item => item.ProjectColumns.Contains(issue.ProjectColumn)).FirstOrDefaultAsync();
+
+            return RedirectToAction("Board", "Home", project_id);
         }
+        //public IActionResult Create()
+        //{
+        //    ViewData["AssigneeUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
+        //    ViewData["ColumnId"] = new SelectList(_context.ProjectColumns, "Id", "Id");
+        //    ViewData["ReporterUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
+        //    ViewData["SprintId"] = new SelectList(_context.Sprints, "Id", "Id");
+        //    return View();
+        //}
+
+        //// POST: Issues/Create
+        //// To protect from overposting attacks, enable the specific properties you want to bind to.
+        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("Id,Title,Description,ColumnId,SprintId,EstimatedTime,EllapsedTime,CreatedDate,AssigneeUserId,ReporterUserId")] Issue issue)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Add(issue);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["AssigneeUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", issue.AssigneeUserId);
+        //    ViewData["ColumnId"] = new SelectList(_context.ProjectColumns, "Id", "Id", issue.ColumnId);
+        //    ViewData["ReporterUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", issue.ReporterUserId);
+        //    ViewData["SprintId"] = new SelectList(_context.Sprints, "Id", "Id", issue.SprintId);
+        //    return View(issue);
+        //}
+
+        //// GET: Issues/Edit/5
+        //public async Task<IActionResult> Edit(int? id)
+        //{
+        //    if (id == null || _context.Issues == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var issue = await _context.Issues.FindAsync(id);
+        //    if (issue == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    ViewData["AssigneeUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", issue.AssigneeUserId);
+        //    ViewData["ColumnId"] = new SelectList(_context.ProjectColumns, "Id", "Id", issue.ColumnId);
+        //    ViewData["ReporterUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", issue.ReporterUserId);
+        //    ViewData["SprintId"] = new SelectList(_context.Sprints, "Id", "Id", issue.SprintId);
+        //    return View(issue);
+        //}
+
+        //// POST: Issues/Edit/5
+        //// To protect from overposting attacks, enable the specific properties you want to bind to.
+        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,ColumnId,SprintId,EstimatedTime,EllapsedTime,CreatedDate,AssigneeUserId,ReporterUserId")] Issue issue)
+        //{
+        //    if (id != issue.Id)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            _context.Update(issue);
+        //            await _context.SaveChangesAsync();
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            if (!IssueExists(issue.Id))
+        //            {
+        //                return NotFound();
+        //            }
+        //            else
+        //            {
+        //                throw;
+        //            }
+        //        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["AssigneeUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", issue.AssigneeUserId);
+        //    ViewData["ColumnId"] = new SelectList(_context.ProjectColumns, "Id", "Id", issue.ColumnId);
+        //    ViewData["ReporterUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", issue.ReporterUserId);
+        //    ViewData["SprintId"] = new SelectList(_context.Sprints, "Id", "Id", issue.SprintId);
+        //    return View(issue);
+        //}
 
         // GET: Issues/Delete/5
         public async Task<IActionResult> Delete(int? id)

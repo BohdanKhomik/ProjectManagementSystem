@@ -30,24 +30,18 @@ namespace GraduateWork.Controllers
         {
             return RedirectToAction("Create", "Sprints");
         }
+        //[HttpGet]
+        //public async Task<IActionResult> ManageUsers()//Movie id
+        //{
+        //    return View();
+        //}
 
-        public IActionResult Create()
-        {
-            return RedirectToAction("Create", "Projects");
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> ManageUsers()//Movie id
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ManageUsers(int? Id)//Movie id
-        {
-            var columns_dbContext = _dbContext.ProjectColumns.Where(c => c.ProjectId == Id).Include(c => c.Issues);
-            return View(await columns_dbContext.ToListAsync());
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> ManageUsers(int? Id)//Movie id
+        //{
+        //    var columns_dbContext = _dbContext.ProjectColumns.Where(c => c.ProjectId == Id).Include(c => c.Issues);
+        //    return View(await columns_dbContext.ToListAsync());
+        //}
 
         public IActionResult Privacy()
         {

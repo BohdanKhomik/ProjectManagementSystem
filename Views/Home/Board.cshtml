@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Board Page";
 }
-
+<div id="issueTable"></div>
 <div class="container">
     <header class="header">
         <nav class="nav-menu">
@@ -45,7 +45,7 @@
                         @foreach (var issue in column.Issues)
                         {
                             <div class="task-wrapper">
-                                <a class="proj-link" asp-action="ViewTask" asp-route-id="@issue.Id">
+                                <a data-toggle="modal" data-target="#addIssue" onclick="addIssue(@issue.Id)" style="cursor:pointer">
                                     <span class="taskFill"></span>
                                     <p class="innerText">
                                         @Html.DisplayFor(modelItem => issue.Title)
@@ -53,9 +53,36 @@
                                 </a>
                             </div>
                         }
+                        <div class="task-wrapper">
+                            <a class="proj-link" data-toggle="modal" data-target="#addIssue" onclick="addIssue()" style="cursor:pointer">
+                                <span class="taskFill">
+                                    <svg width="90" height="90" viewBox="0 0 115 115" fill="none"
+                                     xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M49.5 0H64.8827V49.9906H114.5V64.9906H64.8827V114.991H49.7942V64.9906H0V49.9906H49.5V0Z"
+                                          fill="blueviolet" />
+                                    </svg>
+                                </span>
 
+                                <p class="innerText">
+                                    Create new Issue
+                                </p>
+                            </a>
+                        </div>
                     </div>
                 </div>
             }
         </div>
 </div>
+
+<script>
+    function addIssue(id) {
+        $.ajax({
+            type: "Get",
+            url: "/Issues/CreateOrEdit" + (id ? "?id=" + id : ""),
+            success: function (result) {
+                $("#issueTable").html(result);
+                $("#addIssue").modal('show');
+            }
+        });
+    }
+</script>

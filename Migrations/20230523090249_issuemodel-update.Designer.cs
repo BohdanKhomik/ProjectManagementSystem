@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GraduateWork.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230521073910_proj-user-apd")]
-    partial class projuserapd
+    [Migration("20230523090249_issuemodel-update")]
+    partial class issuemodelupdate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -110,7 +110,7 @@ namespace GraduateWork.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeSpan>("EllapsedTime")
+                    b.Property<TimeSpan?>("EllapsedTime")
                         .HasColumnType("time");
 
                     b.Property<TimeSpan>("EstimatedTime")

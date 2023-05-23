@@ -108,7 +108,7 @@ namespace GraduateWork.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeSpan>("EllapsedTime")
+                    b.Property<TimeSpan?>("EllapsedTime")
                         .HasColumnType("time");
 
                     b.Property<TimeSpan>("EstimatedTime")
