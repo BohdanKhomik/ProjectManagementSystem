@@ -46,6 +46,61 @@ namespace GraduateWork.Controllers
         }
 
         // GET: Sprints/Create
+        public async Task<IActionResult> CreateOrEdit(int? id = null)
+        {
+            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Id");
+            Sprint? sprint = null;
+            if (id == null)
+            {
+                sprint = new Sprint();
+            }
+            else
+            {
+                sprint = await _context.Sprints.FindAsync(id);
+                if (sprint == null)
+                {
+                    return NotFound();
+                }
+            }
+            return PartialView("CreateOrEditSprint", sprint);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateOrEdit(Sprint sprint)
+        {
+            ViewData["AssigneeUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
+            ViewData["ColumnId"] = new SelectList(_context.ProjectColumns, "Id", "Id");
+            ViewData["ReporterUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
+            ViewData["SprintId"] = new SelectList(_context.Sprints, "Id", "Id");
+            if (sprint.Id == 0)
+            {
+                if (ModelState.IsValid)
+                {
+                    _context.Add(sprint);
+
+                }
+                else
+                {
+                    return BadRequest("Not valid");
+                }
+            }
+            else
+            {
+                if (ModelState.IsValid)
+                {
+                    _context.Update(sprint);
+                }
+                else
+                {
+                    return BadRequest("Not valid");
+                }
+            }
+            await _context.SaveChangesAsync();
+            var project_id = await _context.Projects.Where(item => item.Id == sprint.ProjectId).FirstOrDefaultAsync();
+            return RedirectToAction("Board", "Home", project_id);
+        }
+
         public IActionResult Create()
         {
             ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Id");

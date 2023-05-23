@@ -47,6 +47,8 @@ br {
 }
 
 .innerText {
+    width:100%;
+    cursor:pointer;
     margin-top: 1rem;
     display: block;
     font: bold 18px Arial, sans-serif;

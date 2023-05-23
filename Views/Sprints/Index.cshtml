@@ -7,9 +7,10 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<button type="button" class="btn btn-info" data-toggle="modal" data-target="#addSprint" onclick="addSprint()">
+    Add Sprint
+</button>
+<div id="sprintTable"></div>
 <table class="table">
     <thead>
         <tr>
@@ -50,7 +51,7 @@
                 @Html.DisplayFor(modelItem => item.Project.Id)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a data-toggle="modal" data-target="#addSprint" onclick="addSprint(@item.Id)" style="cursor:pointer">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
@@ -58,3 +59,15 @@
 }
     </tbody>
 </table>
+<script>
+    function addSprint(id) {
+        $.ajax({
+            type: "Get",
+            url: "/Sprints/CreateOrEdit" + (id ? "?id=" + id : ""),
+            success: function (result) {
+                $("#sprintTable").html(result);
+                $("#addSprint").modal('show');
+            }
+        });
+    }
+</script>

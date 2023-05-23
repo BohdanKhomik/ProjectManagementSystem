@@ -3,75 +3,76 @@
     ViewData["Title"] = "Board Page";
 }
 <div id="issueTable"></div>
+<div id="sprintTable"></div>
 <div class="container">
     <header class="header">
         <nav class="nav-menu">
             <ul class="menu">
                 <li class="menu-li">
-                    <a class="proj-link innerText" asp-action="StartSprint">Start Sprint</a>
-@*                    <a class="proj-link innerText" href="StartSprint"></a>*@
+                    <a class="innerText" data-toggle="modal" data-target="#addSprint" onclick="addSprint()">Create Sprint</a>
                 </li>
                 <li class="menu-li">
-                    <a class="proj-link innerText" href="CreateIssue">CreateIssue</a>
+                    <a class="innerText" data-toggle="modal" data-target="#addIssue" onclick="addIssue()">Create Issue</a>
                 </li>
                 <li class="menu-li">
-                    <a class="proj-link innerText" href="ManageUsers">Manage Users</a>
-                </li>
-            </ul>
-            <ul class="menu">
-                <li class="menu-li">
-                    <a class="proj-link innerText" href="EndSprint">End Sprint</a>
-                </li>
-                <li class="menu-li">
-                    <a class="proj-link innerText" href="Sprint Statistic">Sprint Statistic</a>
+                    <a class="innerText" href="ManageUsers">Manage Users</a>
                 </li>
             </ul>
             <ul class="menu">
                 <li class="menu-li">
-                    <a class="proj-link innerText" href="ShowIssues">Show Issues Without Sprints</a>
+                    @*<a class="innerText" data-toggle="modal" data-target="#addSprint" onclick="addSprint(@sprint.Id)"</a>*@
+                    <a class="innerText" href="EndSprint">Edit Sprint</a>
                 </li>
                 <li class="menu-li">
-                    <a class="proj-link innerText" href="SelectSprint">SelectSprint</a>
+                    <a class="innerText" href="SprintStatistic">Sprint Statistic</a>
+                </li>
+            </ul>
+            <ul class="menu">
+                <li class="menu-li">
+                    <a class="innerText" href="EndSprint">End Sprint</a>
+                </li>
+                <li class="menu-li">
+                    <a class="innerText" href="SelectSprint">SelectSprint</a>
                 </li>
             </ul>
         </nav>
-
-        <div class="main-container">
-            @foreach (var column in Model)
-            {
-                <div class="container-item">
-                    <span class="column-title">@Html.DisplayFor(col => column.Name)</span>
-                    <div class="column-tasks">
-                        @foreach (var issue in column.Issues)
-                        {
-                            <div class="task-wrapper">
-                                <a data-toggle="modal" data-target="#addIssue" onclick="addIssue(@issue.Id)" style="cursor:pointer">
-                                    <span class="taskFill"></span>
-                                    <p class="innerText">
-                                        @Html.DisplayFor(modelItem => issue.Title)
-                                    </p>
-                                </a>
-                            </div>
-                        }
+    </header>
+    <div class="main-container">
+        @foreach (var column in Model)
+        {
+            <div class="container-item">
+                <span class="column-title">@Html.DisplayFor(col => column.Name)</span>
+                <div class="column-tasks">
+                    @foreach (var issue in column.Issues)
+                    {
                         <div class="task-wrapper">
-                            <a class="proj-link" data-toggle="modal" data-target="#addIssue" onclick="addIssue()" style="cursor:pointer">
-                                <span class="taskFill">
-                                    <svg width="90" height="90" viewBox="0 0 115 115" fill="none"
-                                     xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M49.5 0H64.8827V49.9906H114.5V64.9906H64.8827V114.991H49.7942V64.9906H0V49.9906H49.5V0Z"
-                                          fill="blueviolet" />
-                                    </svg>
-                                </span>
-
+                            <a data-toggle="modal" data-target="#addIssue" onclick="addIssue(@issue.Id)" style="cursor:pointer">
+                                <span class="taskFill"></span>
                                 <p class="innerText">
-                                    Create new Issue
+                                    @Html.DisplayFor(modelItem => issue.Title)
                                 </p>
                             </a>
                         </div>
+                    }
+                    <div class="task-wrapper">
+                        <a data-toggle="modal" data-target="#addIssue" onclick="addIssue()" style="cursor:pointer">
+                            <span class="taskFill">
+                                <svg width="90" height="90" viewBox="0 0 115 115" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M49.5 0H64.8827V49.9906H114.5V64.9906H64.8827V114.991H49.7942V64.9906H0V49.9906H49.5V0Z"
+                                      fill="blueviolet" />
+                                </svg>
+                            </span>
+
+                            <p class="innerText">
+                                Create new Issue
+                            </p>
+                        </a>
                     </div>
                 </div>
-            }
-        </div>
+            </div>
+        }
+    </div>
 </div>
 
 <script>
@@ -82,6 +83,19 @@
             success: function (result) {
                 $("#issueTable").html(result);
                 $("#addIssue").modal('show');
+            }
+        });
+    }
+</script>
+
+<script>
+    function addSprint(id) {
+        $.ajax({
+            type: "Get",
+            url: "/Sprints/CreateOrEdit" + (id ? "?id=" + id : ""),
+            success: function (result) {
+                $("#sprintTable").html(result);
+                $("#addSprint").modal('show');
             }
         });
     }
