@@ -44,9 +44,9 @@
                     <div class="column-tasks">
                         @foreach (var issue in column.Issues)
                         {
-                            <div class="task">
+                            <div class="task-wrapper">
                                 <a class="proj-link" asp-action="ViewTask" asp-route-id="@issue.Id">
-                                    <span class="projFill"></span>
+                                    <span class="taskFill"></span>
                                     <p class="innerText">
                                         @Html.DisplayFor(modelItem => issue.Title)
                                     </p>

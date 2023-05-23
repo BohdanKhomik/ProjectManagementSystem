@@ -137,18 +137,23 @@ header {
 }
 
 .column-tasks {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     height: auto;
     color: #937bff;
-    gap: 10px;
-}
 
-.task {
-    width: 250px;
-    height: 200px;
-    background-color: #fc14f0;
-    position: relative;
 }
-
+.task-wrapper {
+    width: 100%;
+    border: 2px solid #000;
+    background: lightblue;
+    display:grid;
+    place-content:center;
+    margin-bottom:10px;
+}
+.taskFill {
+    width: 100%;
+    height: 100px;
+    content: "";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
