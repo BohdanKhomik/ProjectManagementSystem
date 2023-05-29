@@ -1,9 +1,11 @@
 ﻿@model IEnumerable<GraduateWork.Models.ProjectColumn>
 @{
     ViewData["Title"] = "Board Page";
+    var project_id = Model.First().ProjectId;
 }
 <div id="issueTable"></div>
 <div id="sprintTable"></div>
+<div id="endSprintTable"></div>
 <div class="container">
     <header class="header">
         <nav class="nav-menu">
@@ -21,7 +23,7 @@
             <ul class="menu">
                 <li class="menu-li">
                     @*<a class="innerText" data-toggle="modal" data-target="#addSprint" onclick="addSprint(@sprint.Id)"</a>*@
-                    <a class="innerText" href="EndSprint">Edit Sprint</a>
+                    <a class="innerText" data-toggle="modal" data-target="#endSprint" onclick="" >Edit Sprint</a>
                 </li>
                 <li class="menu-li">
                     <a class="innerText" href="SprintStatistic">Sprint Statistic</a>
@@ -29,7 +31,7 @@
             </ul>
             <ul class="menu">
                 <li class="menu-li">
-                    <a class="innerText" href="EndSprint">End Sprint</a>
+                    <a class="innerText" data-toggle="modal" data-target="#endSprint" onclick="endSprint(@project_id)">End Sprint</a>
                 </li>
                 <li class="menu-li">
                     <a class="innerText" href="SelectSprint">SelectSprint</a>
@@ -86,9 +88,7 @@
             }
         });
     }
-</script>
 
-<script>
     function addSprint(id) {
         $.ajax({
             type: "Get",
@@ -96,6 +96,17 @@
             success: function (result) {
                 $("#sprintTable").html(result);
                 $("#addSprint").modal('show');
+            }
+        });
+    }
+
+    function endSprint(id) {
+        $.ajax({
+            type: "Get",
+            url: "/Home/EndSprint?Id=" + id,
+            success: function (result) {
+                $("#endSprintTable").html(result);
+                $("#endSprint").modal('show');
             }
         });
     }

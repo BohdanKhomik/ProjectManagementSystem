@@ -1,8 +1,10 @@
 ﻿using GraduateWork.Data;
 using GraduateWork.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Net.Sockets;
 
 namespace GraduateWork.Controllers
 {
@@ -20,15 +22,33 @@ namespace GraduateWork.Controllers
         }
         
         [HttpGet]
-        public async Task<IActionResult> Board(int? Id)//Movie id
+        public async Task<IActionResult> Board(int? Id)//Project id
         {
+            //var project_obj = _dbContext.Projects.Where(p => p.Id == Id);
+            //ViewBag.ProjectObj = project_obj;
             var columns_dbContext = _dbContext.ProjectColumns.Where(c => c.ProjectId == Id).Include(c => c.Issues);
             return View(await columns_dbContext.ToListAsync());
         }
+
         [HttpGet]
-        public IActionResult StartSprint()
+        public async Task<IActionResult> EndSprint(int Id)//Project id
         {
-            return RedirectToAction("Create", "Sprints");
+            DateTime current = DateTime.Now;
+            //var sprint_context = _dbContext.Sprints.Where(s => s.ProjectId == Id).ToListAsync();
+            ViewBag.ID = Id;
+            var sprint_context = _dbContext.Sprints.Where(s => s.EndDate > current && s.ProjectId == Id).Include(c => c.Project).ToListAsync();
+            return PartialView("EndSprint", await sprint_context);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> getSprint(int Id)//Project id
+        {
+            Sprint sprint = await _dbContext.Sprints.Where(s => s.Id == Id).FirstOrDefaultAsync();
+            sprint.EndDate = DateTime.Now;
+            _dbContext.Update(sprint);
+            await _dbContext.SaveChangesAsync();
+            var project_id = await _dbContext.Projects.Where(s => s.Id == sprint.ProjectId).FirstOrDefaultAsync();
+            return RedirectToAction("Board", "Home", project_id);
         }
         //[HttpGet]
         //public async Task<IActionResult> ManageUsers()//Movie id
@@ -67,12 +87,6 @@ namespace GraduateWork.Controllers
         public IActionResult Sprints()
         {
             return RedirectToAction("Index", "Sprints");
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
