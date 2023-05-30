@@ -20,9 +20,9 @@ namespace GraduateWork.Controllers
         }
 
         // GET: ProjectUsers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? Id)
         {
-            var applicationDbContext = _context.ProjectUsers.Include(p => p.Project).Include(p => p.User);
+            var applicationDbContext = _context.ProjectUsers.Where(p => p.ProjectId == Id).Include(p => p.Project).Include(p => p.User);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -43,89 +43,61 @@ namespace GraduateWork.Controllers
                 return NotFound();
             }
 
-            return View(projectUser);
+            return PartialView("Details", projectUser);
         }
 
         // GET: ProjectUsers/Create
-        public IActionResult Create()
+        public async Task<IActionResult> CreateOrEdit(int? id = null)
         {
             var users = _context.ApplicationUsers.ToList();
             ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Id");
             ViewData["UserId"] = new SelectList(users, "Id", "Id");
-            return View();
+            ProjectUser? projectUser = null;
+            if (id == null)
+            {
+                projectUser = new ProjectUser();
+            }
+            else
+            {
+                projectUser = await _context.ProjectUsers.FindAsync(id);
+                if (projectUser == null)
+                {
+                    return NotFound();
+                }
+            }
+            return PartialView("CreateOrEditProjectUser", projectUser);
         }
-
-        // POST: ProjectUsers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,UserId,ProjectId")] ProjectUser projectUser)
+        public async Task<IActionResult> CreateOrEdit(ProjectUser projectUser)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(projectUser);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
             ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Id", projectUser.ProjectId);
             ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", projectUser.UserId);
-            return View(projectUser);
-        }
-
-        // GET: ProjectUsers/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.ProjectUsers == null)
+            if (projectUser.Id == 0)
             {
-                return NotFound();
+                if (ModelState.IsValid)
+                {
+                    _context.Add(projectUser);
+
+                }
+                else
+                {
+                    return BadRequest("Not valid");
+                }
             }
-
-            var projectUser = await _context.ProjectUsers.FindAsync(id);
-            if (projectUser == null)
+            else
             {
-                return NotFound();
-            }
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Id", projectUser.ProjectId);
-            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", projectUser.UserId);
-            return View(projectUser);
-        }
-
-        // POST: ProjectUsers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,UserId,ProjectId")] ProjectUser projectUser)
-        {
-            if (id != projectUser.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                if (ModelState.IsValid)
                 {
                     _context.Update(projectUser);
-                    await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!ProjectUserExists(projectUser.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return BadRequest("Not valid");
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Id", projectUser.ProjectId);
-            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", projectUser.UserId);
-            return View(projectUser);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
 
         // GET: ProjectUsers/Delete/5
@@ -145,7 +117,7 @@ namespace GraduateWork.Controllers
                 return NotFound();
             }
 
-            return View(projectUser);
+            return PartialView("Delete", projectUser);
         }
 
         // POST: ProjectUsers/Delete/5

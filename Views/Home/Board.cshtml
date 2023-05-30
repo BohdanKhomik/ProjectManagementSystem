@@ -17,13 +17,12 @@
                     <a class="innerText" data-toggle="modal" data-target="#addIssue" onclick="addIssue()">Create Issue</a>
                 </li>
                 <li class="menu-li">
-                    <a class="innerText" href="ManageUsers">Manage Users</a>
+                    <a class="innerText" asp-action="ManageUsers" asp-route-id="@project_id">ManageUsers</a>
                 </li>
             </ul>
             <ul class="menu">
                 <li class="menu-li">
-                    @*<a class="innerText" data-toggle="modal" data-target="#addSprint" onclick="addSprint(@sprint.Id)"</a>*@
-                    <a class="innerText" data-toggle="modal" data-target="#endSprint" onclick="" >Edit Sprint</a>
+                    <a class="innerText" data-toggle="modal" data-target="#endSprint" onclick="endSprint(@project_id)">End Sprint</a>
                 </li>
                 <li class="menu-li">
                     <a class="innerText" href="SprintStatistic">Sprint Statistic</a>
@@ -31,7 +30,7 @@
             </ul>
             <ul class="menu">
                 <li class="menu-li">
-                    <a class="innerText" data-toggle="modal" data-target="#endSprint" onclick="endSprint(@project_id)">End Sprint</a>
+                    <a class="innerText" href="SelectIssueWOSprint">Select Issues without Sprint</a>
                 </li>
                 <li class="menu-li">
                     <a class="innerText" href="SelectSprint">SelectSprint</a>

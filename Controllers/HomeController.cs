@@ -41,7 +41,7 @@ namespace GraduateWork.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> getSprint(int Id)//Project id
+        public async Task<IActionResult> FinishSprint(int Id)//Project id
         {
             Sprint sprint = await _dbContext.Sprints.Where(s => s.Id == Id).FirstOrDefaultAsync();
             sprint.EndDate = DateTime.Now;
@@ -50,11 +50,12 @@ namespace GraduateWork.Controllers
             var project_id = await _dbContext.Projects.Where(s => s.Id == sprint.ProjectId).FirstOrDefaultAsync();
             return RedirectToAction("Board", "Home", project_id);
         }
-        //[HttpGet]
-        //public async Task<IActionResult> ManageUsers()//Movie id
-        //{
-        //    return View();
-        //}
+        [HttpGet]
+        public async Task<IActionResult> ManageUsers(int? Id)//Movie id
+        {
+            var project_id = await _dbContext.Projects.Where(p => p.Id == Id).FirstOrDefaultAsync();
+            return RedirectToAction("Index","ProjectUsers", project_id);
+        }
 
         //[HttpPost]
         //public async Task<IActionResult> ManageUsers(int? Id)//Movie id

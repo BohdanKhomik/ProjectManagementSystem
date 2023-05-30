@@ -5,11 +5,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Manage Project Users</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<button type="button" class="btn btn-info" data-toggle="modal" data-target="#addProjectUser" onclick="addProjectUser()">
+    Add Project User
+</button>
+<div id="addTable"></div>
+<div id="deleteTable"></div>
+<div id="detailsTable"></div>
 <table class="table">
     <thead>
         <tr>
@@ -21,6 +24,9 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Project)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Role)
             </th>
             <th></th>
         </tr>
@@ -37,12 +43,54 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Project.Id)
             </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Role)
+                </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#addProjectUser" onclick="addProjectUser(@item.Id)">
+						Edit
+					</button> |
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#projectUserDetails" onclick="projectUserDetails(@item.Id)">
+						Details
+					</button> |
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteProjectUser" onclick="deleteProjectUser(@item.Id)">
+						Delete
+					</button>
             </td>
         </tr>
 }
     </tbody>
 </table>
+<script>
+    function addProjectUser(id) {
+        $.ajax({
+            type: "Get",
+            url: "/ProjectUsers/CreateOrEdit" + (id ? "?id=" + id : ""),
+            success: function (result) {
+                $("#addTable").html(result);
+                $("#addProjectUser").modal('show');
+            }
+        });
+    }
+    function projectUserDetails(id) {
+		$.ajax({
+			type: "Get",
+            url: "/ProjectUsers/Details" + (id ? "?id=" + id : ""),
+			success: function (result) {
+                $("#detailsTable").html(result);
+				$("#projectUserDetails").modal('show');
+			}
+		});
+	}
+
+	function deleteProjectUser(id) {
+		$.ajax({
+			type: "Get",
+            url: "/ProjectUsers/Delete" + (id ? "?id=" + id : ""),
+			success: function (result) {
+				$("#deleteTable").html(result);
+				$("#deleteProjectUser").modal('show');
+			}
+		});
+	}
+</script>

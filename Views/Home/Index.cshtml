@@ -10,7 +10,7 @@
         @foreach (var project in Model)
         {
             <div class="wrapper">
-                <a class="proj-link" asp-action="Board" asp-route-id="@project.Id">
+                <a  asp-action="Board" asp-route-id="@project.Id">
                     <span class="projFill"></span>
                     <p class="innerText">
                         @Html.DisplayFor(modelItem => project.Name)
@@ -19,7 +19,7 @@
             </div>
         }
         <div class="wrapper">
-            <a class="proj-link" data-toggle="modal" data-target="#addProject" onclick="addProject()" style="cursor:pointer">
+            <a data-toggle="modal" data-target="#addProject" onclick="addProject()" style="cursor:pointer">
                 <span class="projFill">
                     <svg width="115" height="115" viewBox="0 0 115 115" fill="none"
                          xmlns="http://www.w3.org/2000/svg">
