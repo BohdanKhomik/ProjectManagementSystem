@@ -25,15 +25,15 @@
                     <a class="innerText" data-toggle="modal" data-target="#endSprint" onclick="endSprint(@project_id)">End Sprint</a>
                 </li>
                 <li class="menu-li">
-                    <a class="innerText" href="SprintStatistic">Sprint Statistic</a>
+                    <a class="innerText" asp-action="SprintStatistic" asp-route-id="1">Sprint Statistic</a>
                 </li>
             </ul>
             <ul class="menu">
                 <li class="menu-li">
-                    <a class="innerText" href="SelectIssueWOSprint">Select Issues without Sprint</a>
+                    <a class="innerText" href="SelectSprint">SelectSprint</a>
                 </li>
                 <li class="menu-li">
-                    <a class="innerText" href="SelectSprint">SelectSprint</a>
+                    <a class="innerText" asp-action="ProjectStatistic" asp-route-id="@project_id">Project Statistic</a>
                 </li>
             </ul>
         </nav>

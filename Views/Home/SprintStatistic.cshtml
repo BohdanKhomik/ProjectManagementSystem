@@ -1,0 +1,46 @@
+﻿@{
+    ViewBag.Title = "Issue Chart";
+}
+
+<div>
+    <canvas id="issueChart" width="800" height="400"></canvas>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            var estimatedTimes = @Html.Raw(Json.Serialize(ViewBag.EstimatedTimes));
+            var elapsedTimes = @Html.Raw(Json.Serialize(ViewBag.ElapsedTimes));
+            // Створення контексту для малювання діаграми
+            var ctx = document.getElementById("issueChart").getContext("2d");
+
+            // Налаштування діаграми
+            var chart = new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: Array.from({ length: estimatedTimes.length }, (_, i) => i + 1), // Мітки осі X
+                    datasets: [{
+                        label: "Estimated Time",
+                        data: estimatedTimes, // Дані для estimated_time
+                        backgroundColor: "rgba(75, 192, 192, 0.2)",
+                        borderColor: "rgba(75, 192, 192, 1)",
+                        borderWidth: 1
+                    }, {
+                        label: "Elapsed Time",
+                        data: elapsedTimes, // Дані для elapsed_time
+                        backgroundColor: "rgba(255, 99, 132, 0.2)",
+                        borderColor: "rgba(255, 99, 132, 1)",
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}

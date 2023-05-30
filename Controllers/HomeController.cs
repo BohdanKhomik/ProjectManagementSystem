@@ -3,6 +3,7 @@ using GraduateWork.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Diagnostics;
 using System.Net.Sockets;
 
@@ -51,19 +52,66 @@ namespace GraduateWork.Controllers
             return RedirectToAction("Board", "Home", project_id);
         }
         [HttpGet]
-        public async Task<IActionResult> ManageUsers(int? Id)//Movie id
+        public async Task<IActionResult> ManageUsers(int? Id)
         {
             var project_id = await _dbContext.Projects.Where(p => p.Id == Id).FirstOrDefaultAsync();
             return RedirectToAction("Index","ProjectUsers", project_id);
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> ManageUsers(int? Id)//Movie id
-        //{
-        //    var columns_dbContext = _dbContext.ProjectColumns.Where(c => c.ProjectId == Id).Include(c => c.Issues);
-        //    return View(await columns_dbContext.ToListAsync());
-        //}
+        [HttpGet]
+        public async Task<IActionResult> SprintStatistic(int? Id)
+        {
+            var issues_context = await _dbContext.Issues.Where(Issues => Issues.SprintId == Id).ToListAsync();
+            List<decimal> estimatedTimes = new List<decimal>();
+            List<decimal> elapsedTimes = new List<decimal>();
+            decimal totalEstimatedTime = 0;
+            decimal totalElapsedTime = 0;
 
+            foreach (var issue in issues_context)
+            {
+                decimal estimateDecimalValue = Convert.ToDecimal(issue.EstimatedTime.TotalHours);
+                decimal elapsedDecimalValue = Convert.ToDecimal(issue.EllapsedTime?.TotalHours ?? 0);
+                totalEstimatedTime += estimateDecimalValue;
+                totalElapsedTime += elapsedDecimalValue;
+                estimatedTimes.Add(estimateDecimalValue);
+                elapsedTimes.Add(elapsedDecimalValue);
+            }
+
+            estimatedTimes.Add(totalEstimatedTime);
+            elapsedTimes.Add(totalElapsedTime);
+
+            ViewBag.EstimatedTimes = estimatedTimes;
+            ViewBag.ElapsedTimes = elapsedTimes;
+
+            return View();
+        }
+        [HttpGet]
+        public async Task<IActionResult> projectStatistic(int? Id)
+        {
+            var issues_context = await _dbContext.Issues.Where(Issues => Issues.ProjectColumn.ProjectId == Id).ToListAsync();
+            List<decimal> estimatedTimes = new List<decimal>();
+            List<decimal> elapsedTimes = new List<decimal>();
+            decimal totalEstimatedTime = 0;
+            decimal totalElapsedTime = 0;
+
+            foreach (var issue in issues_context)
+            {
+                decimal estimateDecimalValue = Convert.ToDecimal(issue.EstimatedTime.TotalHours);
+                decimal elapsedDecimalValue = Convert.ToDecimal(issue.EllapsedTime?.TotalHours ?? 0);
+                totalEstimatedTime += estimateDecimalValue;
+                totalElapsedTime += elapsedDecimalValue;
+                estimatedTimes.Add(estimateDecimalValue);
+                elapsedTimes.Add(elapsedDecimalValue);
+            }
+
+            estimatedTimes.Add(totalEstimatedTime);
+            elapsedTimes.Add(totalElapsedTime);
+
+            ViewBag.EstimatedTimes = estimatedTimes;
+            ViewBag.ElapsedTimes = elapsedTimes;
+
+            return View("SprintStatistic");
+        }
         public IActionResult Privacy()
         {
             return View();
