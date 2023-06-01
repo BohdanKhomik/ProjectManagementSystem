@@ -26,32 +26,16 @@ namespace GraduateWork.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: ProjectUsers/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.ProjectUsers == null)
-            {
-                return NotFound();
-            }
-
-            var projectUser = await _context.ProjectUsers
-                .Include(p => p.Project)
-                .Include(p => p.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (projectUser == null)
-            {
-                return NotFound();
-            }
-
-            return PartialView("Details", projectUser);
-        }
-
         // GET: ProjectUsers/Create
         public async Task<IActionResult> CreateOrEdit(int? id = null)
         {
-            var users = _context.ApplicationUsers.ToList();
             ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Id");
+            IEnumerable<Project> projects = _context.Projects;
+            ViewBag.Project = projects;
+
+            var users = _context.ApplicationUsers.ToList();
             ViewData["UserId"] = new SelectList(users, "Id", "Id");
+            ViewBag.Users = users;
             ProjectUser? projectUser = null;
             if (id == null)
             {
@@ -97,9 +81,26 @@ namespace GraduateWork.Controllers
                 }
             }
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { Id = projectUser.ProjectId });
         }
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null || _context.ProjectUsers == null)
+            {
+                return NotFound();
+            }
 
+            var projectUser = await _context.ProjectUsers
+                .Include(p => p.Project)
+                .Include(p => p.User)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (projectUser == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("Details", projectUser);
+        }
         // GET: ProjectUsers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -137,11 +138,6 @@ namespace GraduateWork.Controllers
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ProjectUserExists(int id)
-        {
-          return (_context.ProjectUsers?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

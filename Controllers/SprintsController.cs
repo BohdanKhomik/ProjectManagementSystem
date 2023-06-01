@@ -49,6 +49,9 @@ namespace GraduateWork.Controllers
         public async Task<IActionResult> CreateOrEdit(int? id = null)
         {
             ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Id");
+            IEnumerable<Project> projects = _context.Projects;
+            ViewBag.Project = projects;
+
             Sprint? sprint = null;
             if (id == null)
             {
@@ -69,10 +72,9 @@ namespace GraduateWork.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateOrEdit(Sprint sprint)
         {
-            ViewData["AssigneeUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
-            ViewData["ColumnId"] = new SelectList(_context.ProjectColumns, "Id", "Id");
-            ViewData["ReporterUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
-            ViewData["SprintId"] = new SelectList(_context.Sprints, "Id", "Id");
+            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Id");
+            IEnumerable<Project> projects = _context.Projects;
+            ViewBag.Project = projects;
             if (sprint.Id == 0)
             {
                 if (ModelState.IsValid)
@@ -137,11 +139,6 @@ namespace GraduateWork.Controllers
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool SprintExists(int id)
-        {
-          return (_context.Sprints?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

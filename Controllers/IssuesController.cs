@@ -51,10 +51,16 @@ namespace GraduateWork.Controllers
         // GET: Issues/Create
         public async Task<IActionResult> CreateOrEdit(int? id = null)
         {
-            ViewData["AssigneeUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
-            ViewData["ColumnId"] = new SelectList(_context.ProjectColumns, "Id", "Id");
-            ViewData["ReporterUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
-            ViewData["SprintId"] = new SelectList(_context.Sprints, "Id", "Id");
+            var users = _context.ApplicationUsers.ToList();
+            //ViewData["UserId"] = new SelectList(users, "Id", "Id");
+            ViewBag.Users = users;
+            //ViewData["ColumnId"] = new SelectList(_context.ProjectColumns, "Id", "Id");
+            IEnumerable<ProjectColumn> projectColumn = _context.ProjectColumns;
+            ViewBag.ProjectColumns = projectColumn;
+
+            //ViewData["SprintId"] = new SelectList(_context.Sprints, "Id", "Id");
+            IEnumerable<Sprint> sprint = _context.Sprints;
+            ViewBag.Sprints = sprint;
             Issue? issue = null;
             if (id == null)
             {

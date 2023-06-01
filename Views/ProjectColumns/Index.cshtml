@@ -7,9 +7,12 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<button type="button" class="btn btn-info" data-toggle="modal" data-target="#addProjectColumn" onclick="addProjectColumn()">
+    Add Project Column
+</button>
+<div id="addTable"></div>
+<div id="deleteTable"></div>
+<div id="detailsTable"></div>
 <table class="table">
     <thead>
         <tr>
@@ -23,20 +26,60 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Project.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Project.Name)
+                </td>
+                <td>
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#addProjectColumn" onclick="addProjectColumn(@item.Id)">
+                        Edit
+                    </button> |
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#projectColumnDetails" onclick="projectColumnDetails(@item.Id)">
+                        Details
+                    </button> |
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteProjectColumn" onclick="deleteProjectColumn(@item.Id)">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+<script>
+    function addProjectColumn(id) {
+        $.ajax({
+            type: "Get",
+            url: "/ProjectColumns/CreateOrEdit" + (id ? "?id=" + id : ""),
+            success: function (result) {
+                $("#addTable").html(result);
+                $("#addProjectColumn").modal('show');
+            }
+        });
+    }
+    function projectColumnDetails(id) {
+        $.ajax({
+            type: "Get",
+            url: "/ProjectColumns/Details" + (id ? "?id=" + id : ""),
+            success: function (result) {
+                $("#detailsTable").html(result);
+                $("#projectColumnDetails").modal('show');
+            }
+        });
+    }
+
+    function deleteProjectColumn(id) {
+        $.ajax({
+            type: "Get",
+            url: "/ProjectColumns/Delete" + (id ? "?id=" + id : ""),
+            success: function (result) {
+                $("#deleteTable").html(result);
+                $("#deleteProjectColumn").modal('show');
+            }
+        });
+    }
+</script>

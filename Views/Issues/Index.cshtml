@@ -56,10 +56,10 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ProjectColumn.Id)
+                @Html.DisplayFor(modelItem => item.ProjectColumn.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Sprint.Id)
+                @Html.DisplayFor(modelItem => item.Sprint.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.EstimatedTime)
@@ -71,10 +71,10 @@
                 @Html.DisplayFor(modelItem => item.CreatedDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Assignee.Id)
+                @Html.DisplayFor(modelItem => item.Assignee.UserName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Reporter.Id)
+                @Html.DisplayFor(modelItem => item.Reporter.UserName)
             </td>
             <td>
                     <a data-toggle="modal" data-target="#addIssue" onclick="addIssue(@item.Id)" style="cursor:pointer">Edit</a> |

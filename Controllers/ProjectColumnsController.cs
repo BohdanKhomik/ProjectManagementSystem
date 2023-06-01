@@ -19,14 +19,67 @@ namespace GraduateWork.Controllers
             _context = context;
         }
 
-        // GET: ProjectColumns
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.ProjectColumns.Include(p => p.Project);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: ProjectColumns/Details/5
+        public async Task<IActionResult> CreateOrEdit(int? id = null)
+        {
+            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Id");
+            IEnumerable<Project> projects = _context.Projects;
+            ViewBag.Project = projects;
+            ProjectColumn? projectColumn = null;
+            if (id == null)
+            {
+                projectColumn = new ProjectColumn();
+            }
+            else
+            {
+                projectColumn = await _context.ProjectColumns.FindAsync(id);
+                if (projectColumn == null)
+                {
+                    return NotFound();
+                }
+            }
+            return PartialView("CreateOrEdit", projectColumn);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateOrEdit(ProjectColumn projectColumn)
+        {
+            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Id", projectColumn.ProjectId);
+            IEnumerable<Project> projects = _context.Projects;
+            ViewBag.Project = projects;
+            if (projectColumn.Id == 0)
+            {
+                if (ModelState.IsValid)
+                {
+                    _context.Add(projectColumn);
+
+                }
+                else
+                {
+                    return BadRequest("Not valid");
+                }
+            }
+            else
+            {
+                if (ModelState.IsValid)
+                {
+                    _context.Update(projectColumn);
+                }
+                else
+                {
+                    return BadRequest("Not valid");
+                }
+            }
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.ProjectColumns == null)
@@ -42,87 +95,9 @@ namespace GraduateWork.Controllers
                 return NotFound();
             }
 
-            return View(projectColumn);
+            return PartialView(projectColumn);
         }
 
-        // GET: ProjectColumns/Create
-        public IActionResult Create()
-        {
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Id");
-            return View();
-        }
-
-        // POST: ProjectColumns/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,ProjectId")] ProjectColumn projectColumn)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(projectColumn);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Id", projectColumn.ProjectId);
-            return View(projectColumn);
-        }
-
-        // GET: ProjectColumns/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.ProjectColumns == null)
-            {
-                return NotFound();
-            }
-
-            var projectColumn = await _context.ProjectColumns.FindAsync(id);
-            if (projectColumn == null)
-            {
-                return NotFound();
-            }
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Id", projectColumn.ProjectId);
-            return View(projectColumn);
-        }
-
-        // POST: ProjectColumns/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,ProjectId")] ProjectColumn projectColumn)
-        {
-            if (id != projectColumn.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(projectColumn);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProjectColumnExists(projectColumn.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Id", projectColumn.ProjectId);
-            return View(projectColumn);
-        }
-
-        // GET: ProjectColumns/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.ProjectColumns == null)
@@ -138,7 +113,7 @@ namespace GraduateWork.Controllers
                 return NotFound();
             }
 
-            return View(projectColumn);
+            return PartialView(projectColumn);
         }
 
         // POST: ProjectColumns/Delete/5
@@ -158,11 +133,6 @@ namespace GraduateWork.Controllers
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ProjectColumnExists(int id)
-        {
-          return (_context.ProjectColumns?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

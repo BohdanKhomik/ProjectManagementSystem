@@ -3,10 +3,15 @@
     ViewData["Title"] = "Board Page";
     var project_id = Model.First().ProjectId;
 }
+<style>
+    body {
+        background-color: #B8BAC8;
+    }
+</style>
 <div id="issueTable"></div>
 <div id="sprintTable"></div>
 <div id="endSprintTable"></div>
-<div class="container">
+<div class="wrapper-container">
     <header class="header">
         <nav class="nav-menu">
             <ul class="menu">
@@ -30,7 +35,17 @@
             </ul>
             <ul class="menu">
                 <li class="menu-li">
-                    <a class="innerText" href="SelectSprint">SelectSprint</a>
+                    <select class="innerText">
+                        @foreach (Sprint sprint in ViewBag.Sprint)
+                        {
+                            <option>
+                                <a asp-action="Board" asp-route-id="@project_id" asp-route-sprintId="@sprint.Id">
+                                    @sprint.Name
+                                </a>
+                            </option> 
+                        }
+                        
+                    </select>
                 </li>
                 <li class="menu-li">
                     <a class="innerText" asp-action="ProjectStatistic" asp-route-id="@project_id">Project Statistic</a>
@@ -109,4 +124,5 @@
             }
         });
     }
+
 </script>

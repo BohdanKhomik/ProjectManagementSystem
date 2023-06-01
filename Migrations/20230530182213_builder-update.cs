@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GraduateWork.Migrations
 {
-    public partial class issuemodelupdate : Migration
+    public partial class builderupdate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -276,13 +276,13 @@ namespace GraduateWork.Migrations
                         column: x => x.ColumnId,
                         principalTable: "ProjectColumns",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Issues_Sprints_SprintId",
                         column: x => x.SprintId,
                         principalTable: "Sprints",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

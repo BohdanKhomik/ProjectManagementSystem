@@ -1,6 +1,7 @@
 ﻿using GraduateWork.Data;
 using GraduateWork.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -23,12 +24,31 @@ namespace GraduateWork.Controllers
         }
         
         [HttpGet]
-        public async Task<IActionResult> Board(int? Id)//Project id
+        public async Task<IActionResult> Board(int? Id, int? sprintId = null)//Project id
         {
-            //var project_obj = _dbContext.Projects.Where(p => p.Id == Id);
-            //ViewBag.ProjectObj = project_obj;
-            var columns_dbContext = _dbContext.ProjectColumns.Where(c => c.ProjectId == Id).Include(c => c.Issues);
-            return View(await columns_dbContext.ToListAsync());
+            ViewData["SelectList"] = new SelectList(_dbContext.Sprints, dataValueField:"Id", dataTextField:"Name");
+            IEnumerable<Sprint> sprints = await _dbContext.Sprints.ToListAsync();
+            ViewBag.Sprint = sprints;
+
+
+            DateTime current = DateTime.Now;
+
+            if (sprintId == null)
+            {
+                sprintId = await _dbContext.Sprints
+                    .Where(s => s.ProjectId == Id && s.EndDate > current && s.StartDate < current)
+                    .Select(s => s.Id)
+                    .FirstOrDefaultAsync();
+                if (sprintId == null)
+                {
+                    //ToDo: handle case if there is no sprint right now
+                }
+            }
+            
+            var columns = _dbContext.ProjectColumns
+                .Include(c => c.Issues.Where(i => i.SprintId == sprintId))
+                .Where(c => c.ProjectId == Id);
+            return View(await columns.ToListAsync());
         }
 
         [HttpGet]

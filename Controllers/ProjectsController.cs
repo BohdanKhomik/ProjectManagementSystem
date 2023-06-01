@@ -58,13 +58,14 @@ namespace GraduateWork.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Key")] Project project)
+        public async Task<IActionResult> Create([FromForm]Project project)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(project);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Board", "Home");
+               
+                return RedirectToAction("Board", "Home", new { Id = project.Id });
             }
             return View(project);
         }
@@ -156,10 +157,9 @@ namespace GraduateWork.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
         private bool ProjectExists(int id)
         {
-          return (_context.Projects?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Projects?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

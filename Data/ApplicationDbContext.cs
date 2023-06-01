@@ -53,25 +53,29 @@ namespace GraduateWork.Data
                 .HasMany(pc => pc.Issues)
                 .WithOne(i => i.ProjectColumn)
                 .HasForeignKey(i => i.ColumnId)
-               .OnDelete(DeleteBehavior.Restrict);
+               .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Sprint>()
                 .HasMany(s => s.Issues)
                 .WithOne(i => i.Sprint)
                 .HasForeignKey(i => i.SprintId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<Issue>()
-                .HasOne(i => i.Assignee)
+            builder.Entity<Issue>(b =>
+            {
+                b.HasOne(i => i.Assignee)
                 .WithMany(u => u.AssignedIssues)
                 .HasForeignKey(i => i.AssigneeUserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<Issue>()
-                .HasOne(i => i.Reporter)
+                b.HasOne(i => i.Reporter)
                 .WithMany(u => u.ReportedIssues)
                 .HasForeignKey(i => i.ReporterUserId)
                 .OnDelete(DeleteBehavior.Restrict);
+            });
+                
+
+            
 
         }
     }

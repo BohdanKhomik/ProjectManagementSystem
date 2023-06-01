@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GraduateWork.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230523090249_issuemodel-update")]
-    partial class issuemodelupdate
+    [Migration("20230530182213_builder-update")]
+    partial class builderupdate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -396,7 +396,7 @@ namespace GraduateWork.Migrations
                     b.HasOne("GraduateWork.Models.ProjectColumn", "ProjectColumn")
                         .WithMany("Issues")
                         .HasForeignKey("ColumnId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("GraduateWork.Models.ApplicationUser", "Reporter")
@@ -407,7 +407,7 @@ namespace GraduateWork.Migrations
                     b.HasOne("GraduateWork.Models.Sprint", "Sprint")
                         .WithMany("Issues")
                         .HasForeignKey("SprintId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Assignee");
