@@ -27,7 +27,7 @@ namespace GraduateWork.Controllers
         public async Task<IActionResult> Board(int? Id, int? sprintId = null)//Project id
         {
             ViewData["SelectList"] = new SelectList(_dbContext.Sprints, dataValueField:"Id", dataTextField:"Name");
-            IEnumerable<Sprint> sprints = await _dbContext.Sprints.ToListAsync();
+            IEnumerable<Sprint> sprints = await _dbContext.Sprints.Where(s => s.ProjectId == Id).ToListAsync();
             ViewBag.Sprint = sprints;
 
 
@@ -39,10 +39,6 @@ namespace GraduateWork.Controllers
                     .Where(s => s.ProjectId == Id && s.EndDate > current && s.StartDate < current)
                     .Select(s => s.Id)
                     .FirstOrDefaultAsync();
-                if (sprintId == null)
-                {
-                    //ToDo: handle case if there is no sprint right now
-                }
             }
             
             var columns = _dbContext.ProjectColumns
@@ -52,17 +48,16 @@ namespace GraduateWork.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> EndSprint(int Id)//Project id
+        public async Task<IActionResult> EndSprint(int Id)
         {
             DateTime current = DateTime.Now;
-            //var sprint_context = _dbContext.Sprints.Where(s => s.ProjectId == Id).ToListAsync();
             ViewBag.ID = Id;
             var sprint_context = _dbContext.Sprints.Where(s => s.EndDate > current && s.ProjectId == Id).Include(c => c.Project).ToListAsync();
-            return PartialView("EndSprint", await sprint_context);
+            return PartialView(await sprint_context);
         }
 
         [HttpGet]
-        public async Task<IActionResult> FinishSprint(int Id)//Project id
+        public async Task<IActionResult> FinishSprint(int Id)//Sprint id
         {
             Sprint sprint = await _dbContext.Sprints.Where(s => s.Id == Id).FirstOrDefaultAsync();
             sprint.EndDate = DateTime.Now;
@@ -71,8 +66,9 @@ namespace GraduateWork.Controllers
             var project_id = await _dbContext.Projects.Where(s => s.Id == sprint.ProjectId).FirstOrDefaultAsync();
             return RedirectToAction("Board", "Home", project_id);
         }
+
         [HttpGet]
-        public async Task<IActionResult> ManageUsers(int? Id)
+        public async Task<IActionResult> ManageUsers(int? Id)//Project id
         {
             var project_id = await _dbContext.Projects.Where(p => p.Id == Id).FirstOrDefaultAsync();
             return RedirectToAction("Index","ProjectUsers", project_id);
@@ -84,6 +80,8 @@ namespace GraduateWork.Controllers
             var issues_context = await _dbContext.Issues.Where(Issues => Issues.SprintId == Id).ToListAsync();
             List<decimal> estimatedTimes = new List<decimal>();
             List<decimal> elapsedTimes = new List<decimal>();
+
+            List<String> issueNames = new List<String>();
             decimal totalEstimatedTime = 0;
             decimal totalElapsedTime = 0;
 
@@ -93,16 +91,27 @@ namespace GraduateWork.Controllers
                 decimal elapsedDecimalValue = Convert.ToDecimal(issue.EllapsedTime?.TotalHours ?? 0);
                 totalEstimatedTime += estimateDecimalValue;
                 totalElapsedTime += elapsedDecimalValue;
+                issueNames.Add(issue.Title);
                 estimatedTimes.Add(estimateDecimalValue);
                 elapsedTimes.Add(elapsedDecimalValue);
             }
 
             estimatedTimes.Add(totalEstimatedTime);
             elapsedTimes.Add(totalElapsedTime);
+            issueNames.Add("TotalTime");
 
             ViewBag.EstimatedTimes = estimatedTimes;
             ViewBag.ElapsedTimes = elapsedTimes;
-
+            ViewBag.IssueNames = issueNames;
+            DateTime current = DateTime.Now;
+            var sprint = await _dbContext.Sprints.Where(s => s.Id == Id).FirstOrDefaultAsync();
+            if (sprint == null)
+            {
+                ViewBag.Message = "You didn't select sprint!!!";
+            }
+            else {
+            ViewBag.Message = "This is a statistic from " + sprint.Name + " sprint! In the last column you can see total count" ;
+            }
             return View();
         }
         [HttpGet]
@@ -111,6 +120,7 @@ namespace GraduateWork.Controllers
             var issues_context = await _dbContext.Issues.Where(Issues => Issues.ProjectColumn.ProjectId == Id).ToListAsync();
             List<decimal> estimatedTimes = new List<decimal>();
             List<decimal> elapsedTimes = new List<decimal>();
+            List<String> issueNames = new List<String>();
             decimal totalEstimatedTime = 0;
             decimal totalElapsedTime = 0;
 
@@ -122,14 +132,17 @@ namespace GraduateWork.Controllers
                 totalElapsedTime += elapsedDecimalValue;
                 estimatedTimes.Add(estimateDecimalValue);
                 elapsedTimes.Add(elapsedDecimalValue);
+                issueNames.Add(issue.Title);
             }
 
             estimatedTimes.Add(totalEstimatedTime);
             elapsedTimes.Add(totalElapsedTime);
-
+            issueNames.Add("TotalTime");
+            ViewBag.IssueNames = issueNames;
             ViewBag.EstimatedTimes = estimatedTimes;
             ViewBag.ElapsedTimes = elapsedTimes;
-
+            var project = await _dbContext.Projects.Where(p => p.Id == Id).FirstOrDefaultAsync();
+            ViewBag.Message = "This is a statistic from " + project.Name + " project! In the last column you can see total count";
             return View("SprintStatistic");
         }
         public IActionResult Privacy()

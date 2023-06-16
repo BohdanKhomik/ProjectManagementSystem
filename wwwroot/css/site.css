@@ -66,6 +66,7 @@ br {
     background-image: linear-gradient( to right, #54b3d6, #54b3d6 50%, #000 50% );
     background-size: 200% 100%;
     background-position: -100%;
+    border:none;
     display: inline-block;
     position: relative;
     -webkit-background-clip: text;
@@ -109,8 +110,8 @@ br {
 }
 
 .menu-li {
-    display: inline-block;
     list-style: none;
+
 }
 
 

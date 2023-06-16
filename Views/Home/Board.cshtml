@@ -19,7 +19,7 @@
                     <a class="innerText" data-toggle="modal" data-target="#addSprint" onclick="addSprint()">Create Sprint</a>
                 </li>
                 <li class="menu-li">
-                    <a class="innerText" data-toggle="modal" data-target="#addIssue" onclick="addIssue()">Create Issue</a>
+                    <a class="innerText" data-toggle="modal" data-target="#addIssue" onclick="addIssue(null, @project_id)">Create Issue</a>
                 </li>
                 <li class="menu-li">
                     <a class="innerText" asp-action="ManageUsers" asp-route-id="@project_id">ManageUsers</a>
@@ -30,22 +30,20 @@
                     <a class="innerText" data-toggle="modal" data-target="#endSprint" onclick="endSprint(@project_id)">End Sprint</a>
                 </li>
                 <li class="menu-li">
-                    <a class="innerText" asp-action="SprintStatistic" asp-route-id="1">Sprint Statistic</a>
+                    <button id="statisticButton" class="innerText" asp-action="SprintStatistic" asp-route-id="null">Sprint Statistic</button>
                 </li>
             </ul>
             <ul class="menu">
-                <li class="menu-li">
-                    <select class="innerText">
+                <li class="menu-li" style="display:flex; width:26%;">
+                    <select id="sprintList" class="innerText">
+                        <option value="null">Choose sprint</option>
                         @foreach (Sprint sprint in ViewBag.Sprint)
                         {
-                            <option>
-                                <a asp-action="Board" asp-route-id="@project_id" asp-route-sprintId="@sprint.Id">
-                                    @sprint.Name
-                                </a>
-                            </option> 
+                            <option value="@sprint.Id">@sprint.Name</option>
                         }
-                        
+
                     </select>
+                    <button id="boardButton" class="innerText" asp-action="Board" asp-route-id="@project_id" asp-route-sprintId="null">Go to Board</button>
                 </li>
                 <li class="menu-li">
                     <a class="innerText" asp-action="ProjectStatistic" asp-route-id="@project_id">Project Statistic</a>
@@ -62,7 +60,7 @@
                     @foreach (var issue in column.Issues)
                     {
                         <div class="task-wrapper">
-                            <a data-toggle="modal" data-target="#addIssue" onclick="addIssue(@issue.Id)" style="cursor:pointer">
+                            <a data-toggle="modal" data-target="#addIssue" onclick="addIssue(@issue.Id, @project_id)" style="cursor:pointer">
                                 <span class="taskFill"></span>
                                 <p class="innerText">
                                     @Html.DisplayFor(modelItem => issue.Title)
@@ -71,7 +69,7 @@
                         </div>
                     }
                     <div class="task-wrapper">
-                        <a data-toggle="modal" data-target="#addIssue" onclick="addIssue()" style="cursor:pointer">
+                        <a data-toggle="modal" data-target="#addIssue" onclick="addIssue(null, @project_id)" style="cursor:pointer">
                             <span class="taskFill">
                                 <svg width="90" height="90" viewBox="0 0 115 115" fill="none"
                                  xmlns="http://www.w3.org/2000/svg">
@@ -92,10 +90,30 @@
 </div>
 
 <script>
-    function addIssue(id) {
+    document.getElementById('boardButton').addEventListener('click', function () {
+        var sprintId = document.getElementById('sprintList').value;
+        var url = '/Home/Board?Id=@project_id&sprintId=' + sprintId;
+        window.location.href = url;
+    });
+    
+    document.getElementById('statisticButton').addEventListener('click', function () {
+        var sprintId = document.getElementById('sprintList').value;
+        var url = '/Home/SprintStatistic?Id=' + sprintId;
+        window.location.href = url;
+    });
+
+    function addIssue(id, project_id) {
+        var url = "";
+        if(id == null){
+            var url = "/Issues/CreateOrEdit" + "?project_id=" + project_id;
+        }else{
+            var url = "/Issues/CreateOrEdit" + "?id=" + id + "&project_id=" + project_id;
+        }
+
         $.ajax({
             type: "Get",
-            url: "/Issues/CreateOrEdit" + (id ? "?id=" + id : ""),
+            url: url,
+            //url: "/Issues/CreateOrEdit" + (id ? "?id=" + id + "&project_id=" + project_id : "&project_id=" + project_id),
             success: function (result) {
                 $("#issueTable").html(result);
                 $("#addIssue").modal('show');

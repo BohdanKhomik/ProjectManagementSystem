@@ -5,7 +5,7 @@
 }
 <div class="modal fade" role="dialog" tabindex="-1" id="addProject" aria-labelledby="addProjectLable" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
-        <div class="modal-content" style="background-color:lightblue !important;">
+        <div class="modal-content" style="background-color:#BFD7FF !important;">
             <div class="modal-header"><h3>Project</h3></div>
             <div class="modal-body">
                 <form asp-action="Create">
@@ -36,9 +36,6 @@
                                 <th>
                                     Name
                                 </th>
-                                <th>
-                                    Project
-                                </th>
                             </tr>
                         </thead>
 
@@ -48,9 +45,6 @@
                                 <tr class="form-item">
                                     <td>
                                         @Html.EditorFor(p => p.ProjectColumns[i].Name, new { htmlAttributes = new {@class = "form-control"} })
-                                    </td>
-                                    <td>
-                                        @*<input value="@Model.Name" class="form-control" readonly></>*@
                                     </td>
                                 </tr>
                             }
